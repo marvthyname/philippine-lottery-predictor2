@@ -15,7 +15,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Philippine Lottery Predictor",
-  description: "AI-powered Philippine PCSO lottery predictions with premium Swertres features. Install as app for offline access.",
+  description:
+    "AI-powered Philippine PCSO lottery predictions with premium Swertres features. Install as app for offline access.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -32,8 +33,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
-  const requestId = cookies().get("x-request-id")?.value;
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const cookiesStore = await cookies();
+  const requestId = cookiesStore.get("x-request-id")?.value;
+
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <head />
