@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url = "file:./dev.db"
+}
+
+model LotteryResult {
+  id String @id @default(cuid())
+  timestamp DateTime
+  date DateTime
+  game String
+  draw String
+  ballNumbers String
+  jackpot String?
+  winners String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date, game, draw])
+  @@index([game])
+  @@index([date])
+}
+
+model Prediction {
+  id String @id @default(cuid())
+  game String
+  draw String
+  numbers String
+  algorithm String
+  confidence Float
+  isSuccess Boolean?
+  actualNumbers String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([game])
+  @@index([createdAt])
+}
+
+model GcashPayment {
+  id String @id @default(cuid())
+  referenceNumber String @unique
+  amount Float
+  duration Int @default(10)
+  status String @default("PENDING")
+  userInfo String
+  proofImageUrl String?
+  verifiedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  premiumAccess PremiumAccess?
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PremiumAccess {
+  id String @id @default(cuid())
+  paymentId String @unique
+  userInfo String
+  duration Int @default(10)
+  expiresAt DateTime
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payment GcashPayment @relation(fields: [paymentId], references: [id])
+
+  @@index([userInfo])
+  @@index([expiresAt])
+}
